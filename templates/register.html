@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+<h3>Register form</h3>
+<div>
+    <form action={{ url_for('validate') }} method="post">
+        <input type="text" placeholder="Username" name="username"><br>
+        <input type="text" placeholder="E-mail" name="email"><br>
+        <input type="password" placeholder="Password" name="password"><br>
+        <input type="password" placeholder="Confirm oassword" name="confirm-password"><br>
+        <button type="submit" class="button">Register</button>
+    </form>
+<div>
+{% endblock content %}
