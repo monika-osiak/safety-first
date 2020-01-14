@@ -1,3 +1,4 @@
 safe-venv/
 .vscode/
 __pycache__
+sqlite.db

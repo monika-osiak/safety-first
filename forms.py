@@ -27,7 +27,7 @@ class RegisterForm(BaseForm):
         # todo: add regexp to check if a) at least one digit and b) at least one special character and c) etc.
     ])
 
-    confirm_password = PasswordField('confirm-password', validators=[
+    confirm_password = PasswordField('confirm_password', validators=[
         EqualTo('password', 'Passwords are different!')
     ])
 
