@@ -3,7 +3,10 @@ from wtforms import StringField, PasswordField, ValidationError, Form
 from wtforms.validators import DataRequired, Email, Length, EqualTo, Regexp
 from wtforms.csrf.session import SessionCSRF
 from datetime import timedelta
+
+# <----- my imports ----->
 from config import Config
+from validators import UniqueLogin, UniqueEmail, CorrectLogin, CorrectPassword
 
 class BaseForm(FlaskForm):
     class Meta:
@@ -17,8 +20,8 @@ class RegisterForm(BaseForm):
         DataRequired('Login required!'),
         Length(min=6, message='Login needs to have at least 6 characters!'),
         Regexp('^[a-z0-9_-]*$',
-               message='Only small letters, digits, a dash and an underscore allowed!')
-        # UniqueLogin()
+               message='Only small letters, digits, a dash and an underscore allowed!'),
+        UniqueLogin()
     ])
 
     password = PasswordField('password', validators=[
@@ -33,6 +36,17 @@ class RegisterForm(BaseForm):
 
     email = StringField('email', validators=[
         DataRequired('E-mail required!'),
-        Email('This is not valid e-mail address!')
-        # UniqueEmail()
+        Email('This is not valid e-mail address!'),
+        UniqueEmail()
+    ])
+
+class LoginForm(BaseForm):
+    login = StringField('login', validators=[
+        DataRequired('Login required!'),
+        CorrectLogin()
+    ])
+
+    password = StringField('password', validators=[
+        DataRequired('Password required!'),
+        CorrectPassword()
     ])
