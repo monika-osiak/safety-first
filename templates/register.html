@@ -12,13 +12,13 @@
         {% endfor %}
 
         <label for="password">Password</label>
-        <input type="text" value="{{form.password.data if form.password.data}}" name="password" placeholder="Put your password here">
+        <input type="password" value="{{form.password.data if form.password.data}}" name="password" placeholder="Put your password here">
         {% for error in form.password.errors %}
             <p>{{ error }}</p>
         {% endfor %}
 
         <label for="confirm_password">Confirm password</label>
-        <input type="text" value="{{form.confirm_password.data if form.confirm_password.data}}" name="confirm_password" placeholder="Confirm your password">
+        <input type="password" value="{{form.confirm_password.data if form.confirm_password.data}}" name="confirm_password" placeholder="Confirm your password">
         {% for error in form.confirm_password.errors %}
             <p>{{ error }}</p>
         {% endfor %}

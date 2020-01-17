@@ -12,7 +12,7 @@
         {% endfor %}
 
         <label for="password">Password</label>
-        <input type="text" value="{{form.password.data if form.password.data}}" name="password" placeholder="Put your password here">
+        <input type="password" value="{{form.password.data if form.password.data}}" name="password" placeholder="Put your password here">
         {% for error in form.password.errors %}
             <p>{{ error }}</p>
         {% endfor %}
