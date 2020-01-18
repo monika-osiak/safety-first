@@ -50,3 +50,14 @@ class LoginForm(BaseForm):
         DataRequired('Password required!'),
         CorrectPassword()
     ])
+
+class NewPassword(BaseForm):
+    password = PasswordField('password', validators=[
+        DataRequired('Password required!'),
+        Length(min=8, message='Password needs to have at least 8 characters!')
+        # todo: add regexp to check if a) at least one digit and b) at least one special character and c) etc.
+    ])
+
+    confirm_password = PasswordField('confirm_password', validators=[
+        EqualTo('password', 'Passwords are different!')
+    ])
