@@ -51,7 +51,7 @@ class LoginForm(BaseForm):
         CorrectPassword()
     ])
 
-class NewPassword(BaseForm):
+class NewPasswordForm(BaseForm):
     password = PasswordField('password', validators=[
         DataRequired('Password required!'),
         Length(min=8, message='Password needs to have at least 8 characters!')
