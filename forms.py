@@ -51,13 +51,23 @@ class LoginForm(BaseForm):
         CorrectPassword()
     ])
 
-class NewPasswordForm(BaseForm):
+class ChangePasswordForm(BaseForm):
+    login = StringField('login', validators=[
+        DataRequired('Login required!'),
+        CorrectLogin()
+    ])
+
     password = PasswordField('password', validators=[
-        DataRequired('Password required!'),
+        DataRequired('Current password required!'),
+        CorrectPassword()
+    ])
+
+    new_password = PasswordField('new_password', validators=[
+        DataRequired('New password required!'),
         Length(min=8, message='Password needs to have at least 8 characters!')
         # todo: add regexp to check if a) at least one digit and b) at least one special character and c) etc.
     ])
-
-    confirm_password = PasswordField('confirm_password', validators=[
-        EqualTo('password', 'Passwords are different!')
+    
+    confirm_new_password = PasswordField('confirm_new_password', validators=[
+        EqualTo('new_password', 'Passwords are different!')
     ])

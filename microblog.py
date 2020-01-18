@@ -1,12 +1,12 @@
-from flask import Flask, make_response, render_template, session, request, flash, redirect, url_for
+from flask import Flask, make_response, render_template, session, request, flash, redirect, url_for, abort
 from flask_session import Session
-from flask_login import current_user, login_user, logout_user
+from flask_login import current_user, login_user, logout_user, login_required
 from bcrypt import hashpw, gensalt
 from datetime import datetime, timedelta
 from time import sleep
 
 # <----- my imports ----->
-from forms import RegisterForm, LoginForm
+from forms import RegisterForm, LoginForm, ChangePasswordForm
 from config import Config
 from models import db, set_test_data, User, Login
 from login_manager import login_manager
@@ -93,6 +93,28 @@ def new_account():
         return f'Hello {login}'
 
     return render_template('register.html', form=form)
+
+# <----- MANAGING AN ACCOUNT ----->
+@login_required
+@app.route('/change-password', methods=['GET', 'POST'])
+def change_password():
+    form = ChangePasswordForm({'csrf_context': session})
+    form.login.data = current_user.login
+    if form.validate_on_submit():
+        new_password = form.new_password.data
+        current_id = current_user.id
+        user = User.query.filter_by(id=current_id).first()
+        user.set_password(new_password)
+        db.session.commit()
+
+        flash('Password successfully changed!', 'alert-success')
+        return redirect(url_for('index'))
+
+    return render_template('change-password.html', form=form)
+
+
+# <----- POSTS ----->
+# to do
 
 # <----- supplementary functions ----->
 
