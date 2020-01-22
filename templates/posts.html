@@ -1,0 +1,14 @@
+{% extends 'layout.html' %}
+
+{% block content %}
+{% if posts %}
+    {% for post in posts %}
+        <div>
+            <h4>{{ post.title }}</h4>
+            <p>{{ post.content }}</p>
+        </div>
+    {% endfor%}
+{% else %}
+    <p>This user doesn't have any notes yet.
+{% endif %}
+{% endblock content %}

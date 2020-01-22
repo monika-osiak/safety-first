@@ -114,9 +114,18 @@ def change_password():
 
 
 # <----- POSTS ----->
-# to do
+@login_required
+@app.route('/posts/<id>', methods=['GET', 'POST'])
+def get_notes(id):
+    user = User.query.filter_by(id=id).first()
+    posts = user.posts
+    return render_template('posts.html', posts=posts)
 
 # <----- supplementary functions ----->
+@app.route('/all-users')
+def all_users():
+    users = User.query.all()
+    return ' '.join([str(user.id) for user in users])
 
 def get_delay(count):
     if count < 4:
