@@ -25,14 +25,14 @@ login_manager.init_app(app)
 
 @app.route('/')  # main page
 def index():
-    return "Hello, World!"
+    return render_template('index.html', user=current_user)
 
 # <------ LOGGING IN ----->
 
 @app.route('/login', methods=['GET', 'POST'])  # login form
 def login():
     if current_user.is_authenticated:
-        return redirect(url_for('index'))
+        return redirect(url_for('index'), user=current_user)
 
     form = LoginForm(meta={'crsf_context': session})
     user = User.query.filter_by(login=form.login.data).first()
@@ -58,7 +58,7 @@ def login():
 
         next_page = session.get('next', None)
         if not next_page:
-            next_page = url_for('posts', id=current_user.id)
+            next_page = url_for('get_posts', id=current_user.id)
         session['next'] = None
         return redirect(next_page)
 
@@ -110,16 +110,16 @@ def change_password():
         flash('Password successfully changed!', 'alert-success')
         return redirect(url_for('index'))
 
-    return render_template('change-password.html', form=form)
+    return render_template('change-password.html', form=form, user=current_user)
 
 
 # <----- POSTS ----->
 @login_required
 @app.route('/posts/<id>')
-def get_notes(id):
+def get_posts(id):
     user = User.query.filter_by(id=id).first()
     posts = user.posts
-    return render_template('posts.html', posts=posts)
+    return render_template('posts.html', posts=posts, user=current_user)
 
 @login_required
 @app.route('/add-post', methods=['GET', 'POST'])
@@ -145,7 +145,7 @@ def add_post():
         db.session.commit()
         return redirect(url_for('notes', id=current_user.id))
     
-    return render_template('add-post.html', form=form)
+    return render_template('add-post.html', form=form, user=current_user)
 
 # <----- supplementary functions ----->
 @app.route('/all-users')
