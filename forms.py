@@ -1,5 +1,5 @@
 from flask_wtf.form import FlaskForm
-from wtforms import StringField, PasswordField, ValidationError, Form
+from wtforms import StringField, PasswordField, ValidationError, Form, TextAreaField, BooleanField
 from wtforms.validators import DataRequired, Email, Length, EqualTo, Regexp
 from wtforms.csrf.session import SessionCSRF
 from datetime import timedelta
@@ -71,3 +71,13 @@ class ChangePasswordForm(BaseForm):
     confirm_new_password = PasswordField('confirm_new_password', validators=[
         EqualTo('new_password', 'Passwords are different!')
     ])
+
+class CreatePostForm(BaseForm):
+    title = StringField(validators=[
+        DataRequired('Title required!'),
+        Length(max=50, message='Title cannot be longer that 50 characters!')
+    ])
+
+    content = TextAreaField()
+    public = BooleanField()
+    shares = TextAreaField()

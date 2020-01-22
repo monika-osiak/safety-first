@@ -6,9 +6,9 @@ from datetime import datetime, timedelta
 from time import sleep
 
 # <----- my imports ----->
-from forms import RegisterForm, LoginForm, ChangePasswordForm
+from forms import RegisterForm, LoginForm, ChangePasswordForm, CreatePostForm
 from config import Config
-from models import db, set_test_data, User, Login
+from models import db, set_test_data, User, Login, Post
 from login_manager import login_manager
 
 app = Flask(__name__)
@@ -58,7 +58,7 @@ def login():
 
         next_page = session.get('next', None)
         if not next_page:
-            next_page = url_for('index')
+            next_page = url_for('posts', id=current_user.id)
         session['next'] = None
         return redirect(next_page)
 
@@ -115,11 +115,37 @@ def change_password():
 
 # <----- POSTS ----->
 @login_required
-@app.route('/posts/<id>', methods=['GET', 'POST'])
+@app.route('/posts/<id>')
 def get_notes(id):
     user = User.query.filter_by(id=id).first()
     posts = user.posts
     return render_template('posts.html', posts=posts)
+
+@login_required
+@app.route('/add-post', methods=['GET', 'POST'])
+def add_post():
+    form = CreatePostForm(meta={'csrf_context': session})
+    if form.validate_on_submit():
+        title = form.title.data
+        content = form.content.data
+        public = form.public.data
+        new_post = Post(
+            title=title,
+            content=content,
+            owner=current_user.id,
+            public=public
+        )
+        db.session.add(new_post)
+
+        shares_list = {row.strip() for row in form.shares.data.split()}
+        for name in shares_list:
+            share = Share(post=new_post, user_name=name)
+            db.session.add(share)
+
+        db.session.commit()
+        return redirect(url_for('notes', id=current_user.id))
+    
+    return render_template('add-post.html', form=form)
 
 # <----- supplementary functions ----->
 @app.route('/all-users')
