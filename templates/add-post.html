@@ -2,31 +2,40 @@
 
 {% block content %}
 <h3>Add new post</h3>
-<div>
-    <form method="POST" action="/add-post">
-        {{ form.csrf_token }}
+<form method="POST" action="/add-post">
+    {{ form.csrf_token }}
+
+    <div>
         <label for="title">Title</label>
         <input type="text" value="{{form.title.data if form.title.data}}" name="title" placeholder="Title">
         {% for error in form.title.errors %}
             <p>{{ error }}</p>
         {% endfor %}
+    </div>
 
+    <div>
         <label for="content">Content</label>
         <textarea value="{{form.content.data if form.content.data}}" name="content" placeholder="Your text goes here"></textarea>
         {% for error in form.content.errors %}
             <p>{{ error }}</p>
         {% endfor %}
+    </div>
 
+    <div>
         <label for="shares">Share your post with others</label>
         <textarea value="{{form.shares.data if form.shares.data}}" name="shares" placeholder="Put here logins of people who are allowed to see your post (one line, one login)"></textarea>
         {% for error in form.shares.errors %}
             <p>{{ error }}</p>
         {% endfor %}
+    </div>
 
+    <div>
         <input type="checkbox" name="public" id="public-toggle">
         <label for="public-toggle">Public post</label>
+    </div>
 
+    <div>
         <button type="submit">Submit</button>
-    </form>
-<div>
+    </div>
+</form>
 {% endblock content %}

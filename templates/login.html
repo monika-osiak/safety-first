@@ -2,22 +2,26 @@
 
 {% block content %}
 <h3>Login form</h3>
-<div>
-    <form method="POST" action="/login">
-        {{ form.csrf_token }}
-        <label for="login">Login</label>
-        <input type="text" value="{{form.login.data if form.login.data}}" name="login" placeholder="Put your login here">
-        {% for error in form.login.errors %}
-            <p>{{ error }}</p>
-        {% endfor %}
+<form method="POST" action="/login">
+    {{ form.csrf_token }}
+    <div>
+    <label for="login">Login</label>
+    <input type="text" value="{{form.login.data if form.login.data}}" name="login" placeholder="Put your login here">
+    {% for error in form.login.errors %}
+        <p>{{ error }}</p>
+    {% endfor %}
+    </div>
 
-        <label for="password">Password</label>
-        <input type="password" value="{{form.password.data if form.password.data}}" name="password" placeholder="Put your password here">
-        {% for error in form.password.errors %}
-            <p>{{ error }}</p>
-        {% endfor %}
+    <div>
+    <label for="password">Password</label>
+    <input type="password" value="{{form.password.data if form.password.data}}" name="password" placeholder="Put your password here">
+    {% for error in form.password.errors %}
+        <p>{{ error }}</p>
+    {% endfor %}
+    </div>
 
+    <div>
         <button type="submit">Submit</button>
-    </form>
-<div>
+    </div>
+</form>
 {% endblock content %}

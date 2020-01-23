@@ -13,24 +13,28 @@
 </head>
 
 <body>
-    {% if user and user.is_authenticated %}
-    <ul>
-        <li><a href="/logout">Log out</a></li>
-        <li><a href="/add-post">Add new post</a></li>
-    </ul>
-    {% else %}
-    <ul>
-        <li><a href="/login">Log in</a></li>
-        <li><a href="/register">Register</a></li>
-    </ul>
-    {% endif %}
+    <div class="links">
+        {% if user and user.is_authenticated %}
+        <ul>
+            <li><a href="/logout">Log out</a></li>
+            <li><a href="/add-post">Add new post</a></li>
+        </ul>
+        {% else %}
+        <ul>
+            <li><a href="/login">Log in</a></li>
+            <li><a href="/new-account">Register</a></li>
+        </ul>
+        {% endif %}
+    </div>
 
     <header>
         <h1>SAFETY FIRST</h1>
         <h2>...a (very) secure microblog</h2>
     </header>
+    <div class="content">
     {% block content %}
     {% endblock content %}
+    </div>
     <footer>
         <p>by Monika Osiak, 291094, Ochrona danych w systemach informatycznych 2019Z, WE PW</p>
     </footer>
