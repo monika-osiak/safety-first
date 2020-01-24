@@ -147,6 +147,16 @@ def add_post():
     
     return render_template('add-post.html', form=form, user=current_user)
 
+@app.route('/remove-post/<id>')
+@login_required
+def remove_post(id):
+    post = Post.query.filter_by(id=id).first()
+    db.session.delete(post)
+    db.session.commit()
+    #Post.query.filter_by(id=id).delete()
+    #db.session.commit()
+    return redirect(url_for('get_posts', id=current_user.id))
+
 # <----- supplementary functions ----->
 @app.route('/all-users')
 def all_users():
