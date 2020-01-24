@@ -90,7 +90,13 @@ def new_account():
         new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
-        return f'Hello {login}'
+        login_user(new_user)
+
+        next_page = session.get('next', None)
+        if not next_page:
+            next_page = url_for('get_posts', id=current_user.id)
+        session['next'] = None
+        return redirect(next_page)
 
     return render_template('register.html', form=form)
 
