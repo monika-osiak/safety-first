@@ -51,23 +51,39 @@ class Login(db.Model):
 def set_test_data():
     user1 = User(
         login='admin',
-        email='m.osiak46@gmail.com',
+        email='admin@gmail.com',
     )
     user1.set_password('password')
     user2 = User(
         login='monika',
-        email='291094@pw.edu.pl'
+        email='monika@gmail.com'
     )
     user2.set_password('password')
     db.session.add(user1)
     db.session.add(user2)
 
     post1 = Post(
-        title='Lorem ipsum',
+        title='Public post',
+        content='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum pharetra.',
+        author=user1,
+        public=True
+    )
+    db.session.add(post1)
+
+    post2 = Post(
+        title='Private post',
         content='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum pharetra.',
         author=user1,
         public=False
     )
-    db.session.add(post1)
+    db.session.add(post2)
+
+    post3 = Post(
+        title='Private post',
+        content='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum pharetra.',
+        author=user2,
+        public=False
+    )
+    db.session.add(post3)
 
     db.session.commit()

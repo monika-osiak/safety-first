@@ -3,6 +3,7 @@
 {% block content %}
 {% if posts %}
     {% for post in posts %}
+        {% if post.public or (not post.public and post.author == user) %}
         <div class="post">
             <h4>{{ post.title }}</h4>
             {% if not post.public %}
@@ -10,8 +11,15 @@
             {% endif %}
             <p>{{ post.content }}</p>
         </div>
+        {% else %}
+        <div class="post">
+            <p class="info">This post is private and cannot be displayed.</p>
+        </div>
+        {% endif %}
     {% endfor%}
 {% else %}
-    <p>This user doesn't have any notes yet.
+<div class="post">
+    <p class="info">This user doesn't have any notes yet.
+</div>
 {% endif %}
 {% endblock content %}
