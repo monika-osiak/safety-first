@@ -1,0 +1,53 @@
+body {
+  font-family: 'Raleway', sans-serif;
+  -webkit-box-sizing: border-box;
+          box-sizing: border-box;
+}
+
+h1, h2, h3, h4 {
+  font-family: 'Roboto Slab', sanf-serif;
+  font-weight: 400;
+}
+
+header h1, header h2 {
+  margin: 0;
+}
+
+.info {
+  font-weight: 200;
+  font-size: 0.8rem;
+  font-style: italic;
+}
+
+.post {
+  border: 1px solid grey;
+  width: 50%;
+  padding: 10px;
+  margin: 10px 5px;
+}
+
+.input {
+  margin: 10px 5px;
+}
+
+a {
+  text-decoration: none;
+}
+
+nav {
+  margin: auto 0;
+  text-align: right;
+}
+
+nav ul {
+  list-style-type: none;
+  padding: 0;
+  margin: 0;
+}
+
+nav ul li {
+  display: inline-block;
+  text-align: center;
+  margin: 0 10px;
+}
+/*# sourceMappingURL=styles.css.map */

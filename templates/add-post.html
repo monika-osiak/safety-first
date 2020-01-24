@@ -9,7 +9,7 @@
         <label for="title">Title</label>
         <input type="text" value="{{form.title.data if form.title.data}}" name="title" placeholder="Title">
         {% for error in form.title.errors %}
-            <p>{{ error }}</p>
+            <p class="info">{{ error }}</p>
         {% endfor %}
     </div>
 
@@ -17,7 +17,7 @@
         <label for="content">Content</label>
         <textarea value="{{form.content.data if form.content.data}}" name="content" placeholder="Your text goes here"></textarea>
         {% for error in form.content.errors %}
-            <p>{{ error }}</p>
+            <p class="info">{{ error }}</p>
         {% endfor %}
     </div>
 
