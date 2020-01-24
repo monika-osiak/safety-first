@@ -5,7 +5,7 @@
 <form method="POST" action="/add-post">
     {{ form.csrf_token }}
 
-    <div>
+    <div class="input">
         <label for="title">Title</label>
         <input type="text" value="{{form.title.data if form.title.data}}" name="title" placeholder="Title">
         {% for error in form.title.errors %}
@@ -13,7 +13,7 @@
         {% endfor %}
     </div>
 
-    <div>
+    <div class="input">
         <label for="content">Content</label>
         <textarea value="{{form.content.data if form.content.data}}" name="content" placeholder="Your text goes here"></textarea>
         {% for error in form.content.errors %}
@@ -21,12 +21,12 @@
         {% endfor %}
     </div>
 
-    <div>
+    <div class="input">
         <input type="checkbox" name="public" id="public-toggle">
         <label for="public-toggle">Public post</label>
     </div>
 
-    <div>
+    <div class="input">
         <button type="submit">Submit</button>
     </div>
 </form>
