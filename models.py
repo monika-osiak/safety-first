@@ -15,7 +15,7 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(), unique=True)
     password_hash = db.Column(db.String())
 
-    posts = db.relationship('Post', backref='owner', lazy=True)
+    posts = db.relationship('Post', backref='author', lazy=True)
     login_attempts = db.relationship('Login', backref='user', lazy=True)
     recovery_tokens = db.relationship('RecoveryToken', backref='user', lazy=True)
 
@@ -36,19 +36,10 @@ class Post(db.Model):
     title = db.Column(db.String())
     content = db.Column(db.String())
     public = db.Column(db.Boolean())
-    share_list = db.relationship('Share', backref='share', lazy=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
     def __repr__(self):
         return f'<title: {self.title} by {self.user_id}>'
-
-class Share(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    post_id = db.Column(db.Integer, db.ForeignKey('post.id'))
-    user_name = db.Column(db.String(), index=True)
-
-    def __repr__(self):
-        return f'User: {self.user_name} NoteId: {self.note_id}'
 
 class Login(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -74,7 +65,7 @@ def set_test_data():
     post1 = Post(
         title='Lorem ipsum',
         content='Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum pharetra.',
-        owner=user1,
+        author=user1,
         public=False
     )
     db.session.add(post1)

@@ -80,4 +80,3 @@ class CreatePostForm(BaseForm):
 
     content = TextAreaField()
     public = BooleanField()
-    shares = TextAreaField()

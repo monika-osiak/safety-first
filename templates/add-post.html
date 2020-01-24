@@ -22,14 +22,6 @@
     </div>
 
     <div>
-        <label for="shares">Share your post with others</label>
-        <textarea value="{{form.shares.data if form.shares.data}}" name="shares" placeholder="Put here logins of people who are allowed to see your post (one line, one login)"></textarea>
-        {% for error in form.shares.errors %}
-            <p>{{ error }}</p>
-        {% endfor %}
-    </div>
-
-    <div>
         <input type="checkbox" name="public" id="public-toggle">
         <label for="public-toggle">Public post</label>
     </div>

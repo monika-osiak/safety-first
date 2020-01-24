@@ -132,18 +132,12 @@ def add_post():
         new_post = Post(
             title=title,
             content=content,
-            owner=current_user.id,
+            author=current_user,
             public=public
         )
         db.session.add(new_post)
-
-        shares_list = {row.strip() for row in form.shares.data.split()}
-        for name in shares_list:
-            share = Share(post=new_post, user_name=name)
-            db.session.add(share)
-
         db.session.commit()
-        return redirect(url_for('notes', id=current_user.id))
+        return redirect(url_for('get_posts', id=current_user.id))
     
     return render_template('add-post.html', form=form, user=current_user)
 
