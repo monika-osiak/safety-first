@@ -10,3 +10,5 @@ class Config(object):
 
     SESSION_TYPE = 'redis'
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'something'
+
+    TESTING = False

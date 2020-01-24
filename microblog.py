@@ -95,8 +95,8 @@ def new_account():
     return render_template('register.html', form=form)
 
 # <----- MANAGING AN ACCOUNT ----->
-@login_required
 @app.route('/change-password', methods=['GET', 'POST'])
+@login_required
 def change_password():
     form = ChangePasswordForm({'csrf_context': session})
     form.login.data = current_user.login
@@ -114,15 +114,15 @@ def change_password():
 
 
 # <----- POSTS ----->
-@login_required
 @app.route('/posts/<id>')
+@login_required
 def get_posts(id):
     user = User.query.filter_by(id=id).first()
     posts = user.posts
     return render_template('posts.html', posts=posts, user=current_user)
 
-@login_required
 @app.route('/add-post', methods=['GET', 'POST'])
+@login_required
 def add_post():
     form = CreatePostForm(meta={'csrf_context': session})
     if form.validate_on_submit():
