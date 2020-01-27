@@ -1,7 +1,6 @@
 from flask import Flask, make_response, render_template, session, request, flash, redirect, url_for, abort
 from flask_session import Session
 from flask_login import current_user, login_user, logout_user, login_required
-from bcrypt import hashpw, gensalt
 from datetime import datetime, timedelta
 from time import sleep
 

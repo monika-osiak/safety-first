@@ -2,7 +2,8 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from secrets import token_urlsafe
 from datetime import datetime, timedelta
-from bcrypt import hashpw, gensalt
+# from bcrypt import hashpw, gensalt
+from password_manager import hash_password, verify_password
 
 db = SQLAlchemy()
 
@@ -20,7 +21,7 @@ class User(UserMixin, db.Model):
     recovery_tokens = db.relationship('RecoveryToken', backref='user', lazy=True)
 
     def set_password(self, password):
-        self.password_hash = hashpw(password.encode(), gensalt()).decode()
+        self.password_hash = hash_password(password)
 
     def __repr__(self):
         return f'{self.login}'

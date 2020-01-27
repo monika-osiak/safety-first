@@ -1,4 +1,4 @@
-from microblog import app
+from app.microblog import app
 
 if __name__ == "__main__":
     app.run()

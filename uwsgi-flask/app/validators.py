@@ -1,6 +1,7 @@
 from flask import current_app
 from wtforms import ValidationError
-import bcrypt
+# import bcrypt
+from password_manager import hash_password, verify_password
 
 # <----- my imports ----->
 from models import User
@@ -57,5 +58,5 @@ class CorrectPassword(object):
             user = User.query.filter(User.login == login).first()
             if user is None:
                 return
-            if not bcrypt.checkpw(password.encode(), user.password_hash.encode()):
+            if not verify_password(user.password_hash, password):
                 raise ValidationError(self.message)
