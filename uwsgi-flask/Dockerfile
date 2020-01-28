@@ -1,6 +1,6 @@
 FROM python:3.7-alpine
 WORKDIR /var/www
-ENV FLASK_APP microblog.py
+ENV FLASK_APP app/app.py
 ENV FLASK_RUN_HOST 0.0.0.0
 RUN apk add --no-cache gcc musl-dev linux-headers
 COPY uwsgi.ini uwsgi.ini

@@ -14,4 +14,4 @@ services:
    #image: chaberb/flask
     image: osiakm/uwsgi-flask
     volumes:
-      - ./auth:/var/www/app
+      - ./uwsgi-flask/app:/var/www/app
