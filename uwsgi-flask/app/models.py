@@ -2,11 +2,11 @@ from flask_sqlalchemy import SQLAlchemy
 from flask_login import UserMixin
 from secrets import token_urlsafe
 from datetime import datetime, timedelta
-# from bcrypt import hashpw, gensalt
+
+# <----- my imports ----->
 from .password_manager import hash_password, verify_password
 
 db = SQLAlchemy()
-
 TOKEN_VALID_TIME = timedelta(minutes=15)
 TOKEN_LENGTH = 64
 

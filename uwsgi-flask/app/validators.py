@@ -1,6 +1,5 @@
 from flask import current_app
 from wtforms import ValidationError
-# import bcrypt
 
 # <----- my imports ----->
 from .models import User

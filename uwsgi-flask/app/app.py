@@ -16,10 +16,10 @@ from .config import Config
 from .models import db, set_test_data, User, Login, Post, RecoveryToken
 from .login_manager import login_manager
 
+# <----- config code ----->
 app = Flask(__name__)
 app.config.from_object(Config)
 Session(app)
-
 db.init_app(app)
 with app.app_context():
     db.drop_all()
@@ -42,17 +42,17 @@ def login():
     form = LoginForm(meta={'crsf_context': session})
     user = User.query.filter_by(login=form.login.data).first()
 
-    if user and form.password.data:  # login attempt
+    if user and form.password.data:  # oh, a login attempt!
         ip = request.remote_addr
-        login = Login(
+        new_login_attempt = Login(
             successful=form.validate(),
             ip=ip,
             user=user
         )
-        db.session.add(login)
+        db.session.add(new_login_attempt)
         db.session.commit()
 
-        # slow down the brute force
+        # add timestamp to slow down the brute force, let's say 3 minutes
         timestamp = datetime.utcnow() - timedelta(minutes=3)
         login_attempts = [a for a in user.login_attempts if a.timestamp > timestamp and not a.successful]
         count = len(login_attempts)
@@ -72,18 +72,15 @@ def login():
 @app.route('/logout')  #logout
 def logout():
     logout_user()
-    flash('You\'ve been logged out.')
     return redirect(url_for('index'))
 
 # <----- CREATING NEW ACCOUNT ----->
 
 @app.route('/new-account', methods=['GET', 'POST'])  # registration form
 def new_account():
-    
     form = RegisterForm(meta={'csrf_context': session})
-    if form.validate_on_submit():
-        flash('Your account has been created!', 'alert-success')
 
+    if form.validate_on_submit():
         login = form.login.data
         password = form.password.data
         email = form.email.data
@@ -95,22 +92,21 @@ def new_account():
         new_user.set_password(password)
         db.session.add(new_user)
         db.session.commit()
+
         login_user(new_user)
 
-        next_page = session.get('next', None)
-        if not next_page:
-            next_page = url_for('get_posts', id=current_user.id)
-        session['next'] = None
-        return redirect(next_page)
+        return redirect(url_for('get_posts', id=current_user.id))
 
     return render_template('register.html', form=form)
 
 # <----- MANAGING AN ACCOUNT ----->
+
 @app.route('/change-password', methods=['GET', 'POST'])
 @login_required
 def change_password():
     form = ChangePasswordForm(meta={'csrf_context': session})
     form.login.data = current_user.login
+
     if form.validate_on_submit():
         new_password = form.new_password.data
         current_id = current_user.id
@@ -118,7 +114,6 @@ def change_password():
         user.set_password(new_password)
         db.session.commit()
 
-        flash('Password successfully changed!', 'alert-success')
         return redirect(url_for('index'))
 
     return render_template('change-password.html', form=form, user=current_user)
@@ -126,6 +121,7 @@ def change_password():
 @app.route('/recover-password', methods=['GET', 'POST'])
 def recover_password():
     form = RecoverPasswordForm(meta={'csrf_context': session})
+
     if form.validate_on_submit():
         login = form.login.data
         user = User.query.filter_by(login=login).first()
@@ -144,7 +140,6 @@ def recover_password():
         send_email(email, topic, message)
 
         info = "Check your e-mail address. We sent you a message so you can recover your password."
-
         return render_template('info.html', message=info)
 
     return render_template('recover-password.html', form=form)
@@ -153,21 +148,22 @@ def recover_password():
 def validate_password_token():
     token = request.args.get('token', None)
     login = request.args.get('user', None)
-    if not token or not login:
+
+    if not token or not login: # if something is missing
         abort(400)
 
-    user = User.query.filter_by(login=login).first()
+    user = User.query.filter_by(login=login).first() # if there is not such user
     if not user:
         abort(404)
 
     recovery_token = [t for t in user.recovery_tokens if t.token == token]
-    if len(recovery_token) < 1:
+    if len(recovery_token) < 1: # no tokens
         abort(404)
-    if len(recovery_token) > 1:
+    if len(recovery_token) > 1: # to many tokens
         abort(500)
 
     recovery_token = recovery_token[0]
-    if recovery_token.exp_date < datetime.utcnow():
+    if recovery_token.exp_date < datetime.utcnow(): # old token
         abort(400)
 
     session['can_reset_password'] = True
@@ -177,23 +173,25 @@ def validate_password_token():
 @app.route('/reset-password', methods=['GET', 'POST'])
 def reset_password():
     login = session.get('login', None)
-    if not session.get('can_reset_password', None) or not login:
+    if not session.get('can_reset_password', None) or not login: # if something is missing
         abort(400)
 
     form = ResetPasswordForm(meta={'csrf_context': session})
+
     if form.validate_on_submit():
         password = form.password.data
         user = User.query.filter_by(login=login).first()
         user.set_password(password)
         db.session.commit()
-        info = "Password successfully updated. You can login now."
-
         session['can_reset_password'] = False
+
+        info = "Password successfully updated. You can login now."
         return render_template('info.html', message=info)
 
     return render_template('reset-password.html', form=form)
 
 # <----- POSTS ----->
+
 @app.route('/posts/<id>')
 @login_required
 def get_posts(id):
@@ -205,6 +203,7 @@ def get_posts(id):
 @login_required
 def add_post():
     form = CreatePostForm(meta={'csrf_context': session})
+
     if form.validate_on_submit():
         title = form.title.data
         content = form.content.data
@@ -217,6 +216,7 @@ def add_post():
         )
         db.session.add(new_post)
         db.session.commit()
+
         return redirect(url_for('get_posts', id=current_user.id))
     
     return render_template('add-post.html', form=form, user=current_user)
@@ -227,12 +227,11 @@ def remove_post(id):
     post = Post.query.filter_by(id=id).first()
     db.session.delete(post)
     db.session.commit()
-    #Post.query.filter_by(id=id).delete()
-    #db.session.commit()
+
     return redirect(url_for('get_posts', id=current_user.id))
 
 # <----- supplementary functions ----->
-@app.route('/all-users')
+@app.route('/all-users') # debug only
 def all_users():
     users = User.query.all()
     return ' '.join([str(user.id) for user in users])
