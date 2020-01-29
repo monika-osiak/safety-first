@@ -1,4 +1,4 @@
 FROM nginx
 COPY nginx.conf /etc/nginx/nginx.conf
-COPY server.company.com.crt /etc/nginx/server.company.com.crt
-COPY server.company.com.key /etc/nginx/server.company.com.key
+COPY app.com.crt /etc/nginx/app.com.crt
+COPY app.com.key /etc/nginx/app.com.key
