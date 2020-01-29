@@ -1,10 +1,10 @@
 from flask import current_app
 from wtforms import ValidationError
 # import bcrypt
-from password_manager import hash_password, verify_password
 
 # <----- my imports ----->
-from models import User
+from .models import User
+from .password_manager import hash_password, verify_password
 
 class UniqueLogin(object):
     def __init__(self, message=None):

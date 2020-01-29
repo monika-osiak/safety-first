@@ -11,10 +11,10 @@ import smtplib
 import ssl
 
 # <----- my imports ----->
-from forms import RegisterForm, LoginForm, ChangePasswordForm, CreatePostForm, RecoverPasswordForm, ResetPasswordForm
-from config import Config
-from models import db, set_test_data, User, Login, Post, RecoveryToken
-from login_manager import login_manager
+from .forms import RegisterForm, LoginForm, ChangePasswordForm, CreatePostForm, RecoverPasswordForm, ResetPasswordForm
+from .config import Config
+from .models import db, set_test_data, User, Login, Post, RecoveryToken
+from .login_manager import login_manager
 
 app = Flask(__name__)
 app.config.from_object(Config)

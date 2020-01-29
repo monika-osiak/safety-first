@@ -3,7 +3,7 @@ from flask_login import UserMixin
 from secrets import token_urlsafe
 from datetime import datetime, timedelta
 # from bcrypt import hashpw, gensalt
-from password_manager import hash_password, verify_password
+from .password_manager import hash_password, verify_password
 
 db = SQLAlchemy()
 

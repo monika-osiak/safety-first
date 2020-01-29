@@ -5,8 +5,8 @@ from wtforms.csrf.session import SessionCSRF
 from datetime import timedelta
 
 # <----- my imports ----->
-from config import Config
-from validators import UniqueLogin, UniqueEmail, CorrectLogin, CorrectPassword
+from .config import Config
+from .validators import UniqueLogin, UniqueEmail, CorrectLogin, CorrectPassword
 
 class BaseForm(FlaskForm):
     class Meta:

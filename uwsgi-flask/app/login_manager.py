@@ -2,7 +2,7 @@ from flask import current_app
 from flask_login import LoginManager
 
 # <----- my imports ----->
-from models import User
+from .models import User
 
 login_manager = LoginManager()
 login_manager.login_view = 'login'
