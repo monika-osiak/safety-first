@@ -80,3 +80,19 @@ class CreatePostForm(BaseForm):
 
     content = TextAreaField()
     public = BooleanField()
+
+class RecoverPasswordForm(BaseForm):
+    login = StringField('login', validators=[
+        DataRequired('Login required!'),
+        CorrectLogin()
+    ])
+
+class ResetPasswordForm(BaseForm):
+    password = PasswordField('password', validators=[
+        DataRequired('New password required!'),
+        Length(min=8, message='Password needs to have at least 8 characters!')
+        # todo: add regexp to check if a) at least one digit and b) at least one special character and c) etc.
+    ])
+    confirm_password = PasswordField('confirm_password', validators=[
+        EqualTo('password', 'Passwords are different!')
+    ])

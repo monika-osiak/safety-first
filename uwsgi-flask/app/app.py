@@ -3,11 +3,17 @@ from flask_session import Session
 from flask_login import current_user, login_user, logout_user, login_required
 from datetime import datetime, timedelta
 from time import sleep
+from email.mime.text import MIMEText
+from email.mime.multipart import MIMEMultipart
+from urllib.parse import urlsplit, urlunsplit
+
+import smtplib
+import ssl
 
 # <----- my imports ----->
-from forms import RegisterForm, LoginForm, ChangePasswordForm, CreatePostForm
+from forms import RegisterForm, LoginForm, ChangePasswordForm, CreatePostForm, RecoverPasswordForm, ResetPasswordForm
 from config import Config
-from models import db, set_test_data, User, Login, Post
+from models import db, set_test_data, User, Login, Post, RecoveryToken
 from login_manager import login_manager
 
 app = Flask(__name__)
@@ -117,6 +123,75 @@ def change_password():
 
     return render_template('change-password.html', form=form, user=current_user)
 
+@app.route('/recover-password', methods=['GET', 'POST'])
+def recover_password():
+    form = RecoverPasswordForm(meta={'csrf_context': session})
+    if form.validate_on_submit():
+        login = form.login.data
+        user = User.query.filter_by(login=login).first()
+        email = user.email
+        recovery_token = RecoveryToken(user=user)
+        db.session.add(recovery_token)
+        db.session.commit()
+
+        app_url_parts = urlsplit(request.base_url)
+        url_path = url_for('validate_password_token')
+        url_query = f'user={login}&token={recovery_token.token}'
+        recovery_link = urlunsplit((app_url_parts.scheme, app_url_parts.netloc, url_path, url_query, ''))
+
+        topic = 'Recover password'
+        message = f'You can reset your password here: {recovery_link}'
+        send_email(email, topic, message)
+
+        info = "Check your e-mail address. We sent you a message so you can recover your password."
+
+        return render_template('info.html', message=info)
+
+    return render_template('recover-password.html', form=form)
+
+@app.route('/validate-password-token')
+def validate_password_token():
+    token = request.args.get('token', None)
+    login = request.args.get('user', None)
+    if not token or not login:
+        abort(400)
+
+    user = User.query.filter_by(login=login).first()
+    if not user:
+        abort(404)
+
+    recovery_token = [t for t in user.recovery_tokens if t.token == token]
+    if len(recovery_token) < 1:
+        abort(404)
+    if len(recovery_token) > 1:
+        abort(500)
+
+    recovery_token = recovery_token[0]
+    if recovery_token.exp_date < datetime.utcnow():
+        abort(400)
+
+    session['can_reset_password'] = True
+    session['login'] = login
+    return redirect(url_for('reset_password'))
+
+@app.route('/reset-password', methods=['GET', 'POST'])
+def reset_password():
+    login = session.get('login', None)
+    if not session.get('can_reset_password', None) or not login:
+        abort(400)
+
+    form = ResetPasswordForm(meta={'csrf_context': session})
+    if form.validate_on_submit():
+        password = form.password.data
+        user = User.query.filter_by(login=login).first()
+        user.set_password(password)
+        db.session.commit()
+        info = "Password successfully updated. You can login now."
+
+        session['can_reset_password'] = False
+        return render_template('info.html', message=info)
+
+    return render_template('reset-password.html', form=form)
 
 # <----- POSTS ----->
 @app.route('/posts/<id>')
@@ -171,6 +246,28 @@ def get_delay(count):
         return 3
     else:
         return 10
+
+def send_email(email, title, content):
+    port = 465  # For SSL
+    mail_login = app.config['GMAIL_LOGIN']
+    mail_password = app.config['GMAIL_PASSWORD']
+
+    if not mail_login or not mail_password:
+        abort(500)
+
+    sender_email = mail_login
+    receiver_email = email
+    message = MIMEMultipart("alternative")
+    message["Subject"] = title
+    message["From"] = sender_email
+    message["To"] = receiver_email
+
+    part1 = MIMEText(content, "plain")
+    message.attach(part1)
+
+    with smtplib.SMTP_SSL("smtp.gmail.com", port, context=ssl.create_default_context()) as server:
+        server.login(mail_login, mail_password)
+        server.sendmail(sender_email, receiver_email, message.as_string())
 
 if __name__ == '__main__':
     app.run(debug=True)

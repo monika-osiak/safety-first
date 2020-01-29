@@ -3,3 +3,4 @@ safe-venv/
 __pycache__
 sqlite.db
 dump.rdb
+.env

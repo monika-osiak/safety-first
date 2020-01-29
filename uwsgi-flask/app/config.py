@@ -1,7 +1,9 @@
 import os
 from secrets import token_hex
-basedir = os.path.abspath(os.path.dirname(__file__))
+from dotenv import load_dotenv
 
+load_dotenv(verbose=True)
+basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Config(object):
     SQLALCHEMY_DATABASE_URI = os.environ.get(
@@ -12,3 +14,6 @@ class Config(object):
     SECRET_KEY = os.environ.get('SECRET_KEY') or 'something'
 
     TESTING = False
+
+    GMAIL_LOGIN = os.getenv('GMAIL_LOGIN')
+    GMAIL_PASSWORD = os.getenv('GMAIL_PASSWORD')

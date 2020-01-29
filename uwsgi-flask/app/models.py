@@ -52,12 +52,12 @@ class Login(db.Model):
 def set_test_data():
     user1 = User(
         login='admin',
-        email='admin@gmail.com',
+        email='m.osiak46@gmail.com',
     )
     user1.set_password('password')
     user2 = User(
         login='monika',
-        email='monika@gmail.com'
+        email='291094@pw.edu.pl'
     )
     user2.set_password('password')
     db.session.add(user1)
