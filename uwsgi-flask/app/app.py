@@ -109,7 +109,7 @@ def new_account():
 @app.route('/change-password', methods=['GET', 'POST'])
 @login_required
 def change_password():
-    form = ChangePasswordForm({'csrf_context': session})
+    form = ChangePasswordForm(meta={'csrf_context': session})
     form.login.data = current_user.login
     if form.validate_on_submit():
         new_password = form.new_password.data

@@ -1,6 +1,13 @@
 version: '3'
 
 services:
+  redis:
+    image: 'bitnami/redis:latest'
+    ports:
+      - "6379:6379" 
+    environment:
+      - ALLOW_EMPTY_PASSWORD=yes
+
   nginx:
     image: osiakm/nginx-ssl
     depends_on:
@@ -13,5 +20,8 @@ services:
   flask: # when changing chaberb/flask to chaberb/uwsgi-flask change also nginx/nginx.conf
    #image: chaberb/flask
     image: osiakm/uwsgi-flask
+    environment: 
+      - GMAIL_LOGIN=${GMAIL_LOGIN}
+      - GMAIL_PASSWORD=${GMAIL_PASSWORD}
     volumes:
       - ./uwsgi-flask/app:/var/www/app
