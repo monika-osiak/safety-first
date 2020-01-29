@@ -196,6 +196,9 @@ def reset_password():
 @login_required
 def get_posts(id):
     user = User.query.filter_by(id=id).first()
+    if not user:
+        info = "There is not such user!"
+        return render_template('info.html', message=info)
     posts = user.posts
     return render_template('posts.html', posts=posts, user=current_user)
 
@@ -225,6 +228,14 @@ def add_post():
 @login_required
 def remove_post(id):
     post = Post.query.filter_by(id=id).first()
+    user = User.query.filter_by(login=current_user.login).first()    
+    if not post:
+        info = "There is not such message, pal."
+        return render_template('info.html', message=info)
+
+    if post.author != user:
+        info = "You've tried to remove somebody else's message. NOT COOL, BUDDY."
+        return render_template('info.html', message=info)
     db.session.delete(post)
     db.session.commit()
 
